@@ -29,6 +29,10 @@ use Psr\Log\NullLogger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
+/**
+ * @deprecated inject & rely on \Ibexa\Contracts\Core\Repository\RepositoryFactory instead
+ * @see \Ibexa\Contracts\Core\Repository\RepositoryFactory
+ */
 class RepositoryFactory implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
@@ -52,9 +56,12 @@ class RepositoryFactory implements ContainerAwareInterface
     /** @var \Ibexa\Contracts\Core\Repository\LanguageResolver */
     private $languageResolver;
 
+    /**
+     * @phpstan-param class-string $repositoryClass
+     */
     public function __construct(
         ConfigResolverInterface $configResolver,
-        $repositoryClass,
+        string $repositoryClass,
         array $policyMap,
         LanguageResolver $languageResolver,
         LoggerInterface $logger = null
@@ -63,7 +70,7 @@ class RepositoryFactory implements ContainerAwareInterface
         $this->repositoryClass = $repositoryClass;
         $this->policyMap = $policyMap;
         $this->languageResolver = $languageResolver;
-        $this->logger = null !== $logger ? $logger : new NullLogger();
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -93,7 +100,7 @@ class RepositoryFactory implements ContainerAwareInterface
         PasswordValidatorInterface $passwordValidator,
         ConfigResolverInterface $configResolver
     ): Repository {
-        $config = $this->container->get(\Ibexa\Bundle\Core\ApiLoader\RepositoryConfigurationProvider::class)->getRepositoryConfig();
+        $config = $this->container->get(RepositoryConfigurationProvider::class)->getRepositoryConfig();
 
         return new $this->repositoryClass(
             $persistenceHandler,

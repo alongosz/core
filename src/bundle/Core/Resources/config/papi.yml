@@ -11,13 +11,13 @@ parameters:
 services:
     # API
     Ibexa\Bundle\Core\ApiLoader\RepositoryFactory:
-        class: Ibexa\Bundle\Core\ApiLoader\RepositoryFactory
+        deprecated: 'The "%service_id%" service is deprecated since 4.6 and will be removed in 5.0. Rely on @Ibexa\Contracts\Core\Repository\RepositoryFactory instead'
         arguments:
-            - '@ibexa.config.resolver'
-            - Ibexa\Core\Repository\Repository
-            - '%ibexa.api.role.policy_map%'
-            - '@Ibexa\Contracts\Core\Repository\LanguageResolver'
-            - "@?logger"
+            $configResolver: '@ibexa.config.resolver'
+            $repositoryClass: 'Ibexa\Core\Repository\Repository'
+            $policyMap: '%ibexa.api.role.policy_map%'
+            $languageResolver: '@Ibexa\Contracts\Core\Repository\LanguageResolver'
+            $logger: "@?logger"
         calls:
             - [setContainer, ["@service_container"]]
 
